@@ -36,27 +36,27 @@ class Maze:
 
     def reset(self) -> tuple[int, int]:
         valid_slots: list[tuple[int, int]] = []
-        
+
         for row in range(self._rows):
             for col in range(self._cols):
                 cell = self._matrix[row][col]
                 if cell == self.EMPTY or cell == self.START:
                     valid_slots.append((row, col))
-        
+
         if valid_slots:
             self._agent_position = random.choice(valid_slots)
         else:
             self._agent_position = self._start_position
-            
+
         return self._agent_position
-    
+
     def is_on_limits(self, row: int, col: int) -> bool:
         return 0 <= row < self._rows and 0 <= col < self._cols
 
     def is_target(self, row: int, col: int) -> bool:
         return self._matrix[row][col] == self.TARGET
 
-    def is_wall(self, row: int, col: int) -> bool: 
+    def is_wall(self, row: int, col: int) -> bool:
         if not self.is_on_limits(row, col):
             return True
         return self._matrix[row][col] == self.WALL
@@ -65,7 +65,7 @@ class Maze:
         matrix_rows = len(self._matrix)
         matrix_cols = len(self._matrix[0])
 
-        cell_width = surface.get_width() / self._cols  
+        cell_width = surface.get_width() / self._cols
         cell_height = surface.get_height() / self._rows
 
         wall_color = pygame.Color('white')
@@ -74,13 +74,13 @@ class Maze:
 
         for row in range(matrix_rows):
             for col in range(matrix_cols):
-                
+
                 x = col * cell_width
                 y = row * cell_height
 
                 cell = self._matrix[row][col]
 
-                if cell == self.WALL: 
+                if cell == self.WALL:
                     pygame.draw.rect(surface, wall_color, (x, y, cell_width, cell_height))
                 if cell == self.START:
                     pygame.draw.rect(surface, entity_color, (x, y, cell_width, cell_height))
@@ -96,11 +96,19 @@ class Maze:
     @property
     def rows(self) -> int:
         return self._rows
-    
+
     @property
     def cols(self) -> int:
         return self._cols
-    
+
+    @property
+    def agent_position(self) -> tuple[int, int]:
+        return self._agent_position
+
+    @agent_position.setter
+    def agent_position(self, position:tuple[int, int]) -> None:
+        self._agent_position = position
+
     def _load_matrix(self, maze_path: str) -> list[list[int]]:
         matrix: list[list[int]] = []
 
@@ -109,17 +117,17 @@ class Maze:
                 matrix.append([int(x) for x in line.split()])
 
         return matrix
-    
+
     def _find_item(self, item: int) -> tuple[int, int]:
         for row in range(self._rows):
             for col in range(self._cols):
-                if self._matrix[row][col] == item: 
+                if self._matrix[row][col] == item:
                     return (row, col)
-                
+
         return (0,0)
-    
+
     def _find_all_targets(self) -> list[tuple[int, int]]:
-        targets = []
+        targets: list[tuple[int, int]] = []
         for row in range(self._rows):
             for col in range(self._cols):
                 if self._matrix[row][col] == self.TARGET:
