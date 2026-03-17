@@ -1,20 +1,22 @@
+from typing import Any
+
 import pygame
 import numpy as np
 import matplotlib.pyplot as plt
 
 from src.maze import Maze
 
-def draw_color_map(surface: pygame.Surface, maze: Maze, state, table) -> None:
+def draw_color_map(surface:pygame.Surface, maze:Maze, state:tuple[int, int], table:Any) -> None:
     row, col = state
 
     if maze.is_wall(row, col):
         return
-    
+
     max_abs_value: float = np.max(np.abs(table))
 
     if max_abs_value == 0.0:
         max_abs_value = 1.0
-    
+
     rows = maze.rows
     cols = maze.cols
     cell_width = surface.get_width() / cols
@@ -45,7 +47,7 @@ def draw_color_map(surface: pygame.Surface, maze: Maze, state, table) -> None:
 
         pygame.draw.rect(surface, "grey", (x, y, cell_width, cell_height), width=1)
 
-def show_rewards_graph(history: list, window:int=100) -> None:
+def show_rewards_graph(history:list[float], window:int=100) -> None:
     rewards = np.array(history)
 
     if len(rewards) < window:
